@@ -12,15 +12,15 @@ type Client = {
 }
 
 type FormErrors = {
-  name: string
-  email: string
-  business_name: string
+  name?: string
+  email?: string
+  business_name?: string
 }
 
 export default function Home() {
   const [clients, setClients] = useState<Client[]>([])
   const [form, setForm] = useState({ name: '', email: '', business_name: '' })
-  const [errors, setErrors] = useState<FormErrors>({ name: '', email: '', business_name: '' })
+  const [errors, setErrors] = useState<FormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const fetchClients = async () => {
@@ -29,7 +29,7 @@ export default function Home() {
   }
 
   const validateForm = () => {
-    const newErrors: FormErrors = { name: '', email: '', business_name: '' }
+    const newErrors: FormErrors = {}
     const regex = /^[a-zA-Z]+(?:[-'\s][a-zA-Z]+)*$/
    
     if (!form.name.trim()) {
@@ -53,6 +53,7 @@ export default function Home() {
     }
     
     setErrors(newErrors)
+    console.log('New errors', newErrors)
     return Object.keys(newErrors).length === 0
   }
 
@@ -61,6 +62,7 @@ export default function Home() {
     setIsSubmitting(true)
     
     if (!validateForm()) {
+      console.log('Form is not valid', errors)
       setIsSubmitting(false)
       return
     }
@@ -82,6 +84,13 @@ export default function Home() {
         console.error('Error sending email:', error)
       }
     } else {
+      if(error?.code === '23505'){
+        if(error?.message.includes('email')){
+          setErrors({ ...errors, email: 'Email already exists' })
+        }if(error?.message.includes('business_name')){
+          setErrors({ ...errors, business_name: 'Business name already exists' })
+        }
+      }
       console.error('Error adding client:', error)
     }
     
