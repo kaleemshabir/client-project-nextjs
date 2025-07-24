@@ -1,40 +1,40 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useAuth } from '@/lib/auth-context'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react';
+import { useAuth } from '@/lib/auth-context';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function SignIn() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const { signIn, user } = useAuth()
-  const router = useRouter()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { signIn, user } = useAuth();
+  const router = useRouter();
 
   if (user) {
-    router.push('/dashboard')
-    return null
+    router.push('/dashboard');
+    return null;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError(null)
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
 
     try {
-      const { error } = await signIn(email, password)
+      const { error } = await signIn(email, password);
       if (error) {
-        setError('Invalid email or password')
+        setError('Invalid email or password');
       }
     } catch (err) {
-      setError('An unexpected error occurred')
-      console.error(err)
+      setError('An unexpected error occurred');
+      console.error(err);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4">
@@ -101,12 +101,12 @@ export default function SignIn() {
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href="/signup" className="text-blue-500 hover:text-blue-600 font-medium">
             Sign Up
           </Link>
         </p>
       </div>
     </div>
-  )
-} 
+    );
+}
